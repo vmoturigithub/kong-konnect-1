@@ -2,9 +2,22 @@ const express = require('express');
 const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
 const { db, dbInit } = require('./db');
+const https = require('https');
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const httpPort = 3000;
+const httpsPort = 3443;
+
+// SSL/TLS Configuration
+const sslOptions = {
+  //key: fs.readFileSync(path.join(__dirname, 'MYCERTS2', 'nodejs.local.key')),
+  //cert: fs.readFileSync(path.join(__dirname, 'MYCERTS2', 'nodejs.local-bundle.crt'))
+    key: fs.readFileSync(path.join(__dirname, 'MYCERTS3', 'nodejs-svc.com.key')),
+    cert: fs.readFileSync(path.join(__dirname, 'MYCERTS3', 'nodejs-svc.com-bundle.crt'))
+};
 
 app.use(cors());
 app.use(express.json());
@@ -335,13 +348,22 @@ async function addSampleData() {
     });
 }
 
-// Initialize sample data if running the server directly
+// Initialize database and start servers
 if (require.main === module) {
     addSampleData().then(() => {
-        app.listen(port, () => {
-            console.log(`Server is running on port ${port}`);
+        // Create HTTP server
+        http.createServer(app).listen(httpPort, () => {
+            console.log(`HTTP Server is running on http://localhost:${httpPort}`);
         });
-    }).catch(console.error);
+
+        // Create HTTPS server
+        https.createServer(sslOptions, app).listen(httpsPort, () => {
+            console.log(`HTTPS Server is running on https://localhost:${httpsPort}`);
+        });
+    }).catch(err => {
+        console.error('Failed to initialize database:', err);
+        process.exit(1);
+    });
 } else {
     // For testing purposes, add sample data immediately
     addSampleData();
