@@ -1,0 +1,33 @@
+{
+  "name": "catalog-search-service",
+  "version": "1.0.0",
+  "description": "A Node.js REST API service for searching and retrieving catalog items",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "jest --detectOpenHandles"
+  },
+  "keywords": [
+    "catalog",
+    "search",
+    "api",
+    "rest",
+    "sqlite"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.6",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testTimeout": 10000
+  }
+}
